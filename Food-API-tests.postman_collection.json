@@ -1,0 +1,222 @@
+{
+  "info": {
+    "name": "Food API - Dish Module Tests",
+    "_postman_id": "8db68157-8f5c-4a16-8482-b001b7780ab7",
+    "description": "Requests to test GET/POST/PUT/DELETE for /api/v1/dishes and GET /api/v1/categories.\nIncludes pagination, sorting, filtering, validation, and soft-delete scenarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1"
+    },
+    {
+      "key": "dishId",
+      "value": "REPLACE_WITH_EXISTING_DISH_ID"
+    },
+    {
+      "key": "categoryId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "3.7 Get Categories (for dropdown)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/categories"
+      }
+    },
+    {
+      "name": "3.2 List Dishes - default (page=1,limit=5,status=ON_SALE,sort=startDate desc)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/dishes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "dishes"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3.2 List Dishes - page/sort/filter combo",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/dishes?page=2&limit=5&sortBy=price&sortDir=asc&keyword=bo&categoryId={{categoryId}}&minPrice=50000&maxPrice=150000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "dishes"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "2"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            },
+            {
+              "key": "sortBy",
+              "value": "price"
+            },
+            {
+              "key": "sortDir",
+              "value": "asc"
+            },
+            {
+              "key": "keyword",
+              "value": "bo"
+            },
+            {
+              "key": "categoryId",
+              "value": "{{categoryId}}"
+            },
+            {
+              "key": "minPrice",
+              "value": "50000"
+            },
+            {
+              "key": "maxPrice",
+              "value": "150000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "3.2 List Dishes - status=STOPPED",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/dishes?status=STOPPED"
+      }
+    },
+    {
+      "name": "3.2 List Dishes - Bad Request (page=0)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/dishes?page=0&limit=5"
+      }
+    },
+    {
+      "name": "3.3 Get Dish by ID - success",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/dishes/{{dishId}}"
+      }
+    },
+    {
+      "name": "3.3 Get Dish by ID - 404 Not Found",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/dishes/00000000-0000-0000-0000-000000000000"
+      }
+    },
+    {
+      "name": "3.4 Create Dish - success",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bo bit tet sot tieu xanh\",\n  \"description\": \"Bo My nhap khau...\",\n  \"imageUrl\": \"http://example.com/images/bo-bit-tet.jpg\",\n  \"price\": 250000.0,\n  \"categoryId\": 1\n}"
+        },
+        "url": "{{baseUrl}}/dishes"
+      }
+    },
+    {
+      "name": "3.4 Create Dish - 400 Bad Request (name too short)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Pho\",\n  \"description\": \"Pho bo\",\n  \"imageUrl\": \"http://example.com/images/pho.jpg\",\n  \"price\": 60000.0,\n  \"categoryId\": 1\n}"
+        },
+        "url": "{{baseUrl}}/dishes"
+      }
+    },
+    {
+      "name": "3.4 Create Dish - 404 Not Found (categoryId not exists)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bun bo Hue dac biet\",\n  \"description\": \"Cay nhe\",\n  \"imageUrl\": \"http://example.com/images/bun-bo-hue.jpg\",\n  \"price\": 65000.0,\n  \"categoryId\": 999999\n}"
+        },
+        "url": "{{baseUrl}}/dishes"
+      }
+    },
+    {
+      "name": "3.5 Update Dish - success (status STOPPED)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bo bit tet sot tieu den\",\n  \"description\": \"Bo My nhap khau...\",\n  \"imageUrl\": \"http://example.com/images/bo-bit-tet-v2.jpg\",\n  \"price\": 260000.0,\n  \"categoryId\": 1,\n  \"status\": \"STOPPED\"\n}"
+        },
+        "url": "{{baseUrl}}/dishes/{{dishId}}"
+      }
+    },
+    {
+      "name": "3.5 Update Dish - 404 Not Found",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Something long enough\",\n  \"description\": \"desc\",\n  \"imageUrl\": \"http://example.com/images/x.jpg\",\n  \"price\": 100000.0,\n  \"categoryId\": 1,\n  \"status\": \"ON_SALE\"\n}"
+        },
+        "url": "{{baseUrl}}/dishes/00000000-0000-0000-0000-000000000000"
+      }
+    },
+    {
+      "name": "3.6 Delete Dish - 204 No Content",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/dishes/{{dishId}}"
+      }
+    },
+    {
+      "name": "3.6 Delete Dish - 409 Conflict (already deleted)",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/dishes/{{dishId}}"
+      }
+    }
+  ]
+}
